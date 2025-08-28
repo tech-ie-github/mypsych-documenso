@@ -24,14 +24,21 @@ export const auth = new Hono<HonoAuthContext>()
     const validOrigin = new URL(NEXT_PUBLIC_WEBAPP_URL()).origin;
     const headerOrigin = c.req.header('Origin');
 
+    // Allow requests from the main webapp URL or Vercel preview deployments
     if (headerOrigin && headerOrigin !== validOrigin) {
-      return c.json(
-        {
-          message: 'Forbidden',
-          statusCode: 403,
-        },
-        403,
-      );
+      // Check if it's a Vercel preview deployment (contains 'vercel.app' and project name)
+      const isVercelPreview =
+        headerOrigin.includes('.vercel.app') && headerOrigin.includes('mypsych-documenso');
+
+      if (!isVercelPreview) {
+        return c.json(
+          {
+            message: 'Forbidden',
+            statusCode: 403,
+          },
+          403,
+        );
+      }
     }
 
     await next();
