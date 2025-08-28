@@ -20,6 +20,7 @@ const config = {
     preserveModulesRoot: '.',
   },
   external: [/node_modules/],
+  treeshake: false,
   plugins: [
     typescript({
       noEmitOnError: true,
